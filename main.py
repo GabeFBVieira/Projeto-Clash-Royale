@@ -3,7 +3,7 @@ import pymongo
 from pymongo import MongoClient
 client = MongoClient()
 
-client = pymongo.MongoClient('mongodb+srv://padeiro:pao@cluster-gabe.eakkboc.mongodb.net/')
+client = pymongo.MongoClient('Mongo link connection Here')
 
 db = client['bd_clashroyale']
 
