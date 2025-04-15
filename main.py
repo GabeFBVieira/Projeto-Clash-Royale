@@ -1,37 +1,41 @@
 import requests
 import pymongo
+from dotenv import load_dotenv
+import os
 from pymongo import MongoClient
-client = MongoClient()
 
-client = pymongo.MongoClient('Mongo link connection Here')
+# Carregar as variáveis de ambiente do arquivo .env
+load_dotenv()
 
+# Acessar as variáveis de ambiente
+API_KEY = os.getenv('API_KEY')
+MONGOKEY = os.getenv('MONGOKEY')
+
+# Conectar ao MongoDB usando a chave de conexão (MONGOKEY)
+client = MongoClient(MONGOKEY)
+
+# Conectar ao banco de dados específico
 db = client['bd_clashroyale']
 
-cards = db['cards']
+# Acessar as coleções
+players = db['players']
+battles = db['battles']
 
+# Definir os cabeçalhos para a API com o valor real da variável API_KEY
 headers = {
-'Content-type':'application/json',
-'Authorization':'Bearer token here'
+    'Content-type': 'application/json',
+    'Authorization': f'Bearer {API_KEY}'  # Corrigido: API_KEY no cabeçalho de autorização
 }
 
-def coletar_dados_api():
-    url = 'https://api.clashroyale.com/v1/cards'
-    try:
-        resposta = requests.get(url, headers=headers)  
-        resposta.raise_for_status()
-        return resposta.json().get('items', []) 
-    except requests.exceptions.RequestException as e:
-        print(f"Erro ao acessar a API: {e}")
-        return []
+# URL do jogador
+url = "https://api.clashroyale.com/v1/players/%239QQ2J2ULL"
 
-def salvar_dados_mongo(dados):
-    if dados:
-        cards.insert_many(dados)  
-        print(f"{len(dados)} cartas inseridas com sucesso!")
-    else:
-        print("Nenhum dado para salvar.")
+# Fazer a requisição para a API
+response = requests.get(url, headers=headers)
 
-dados = coletar_dados_api()
-salvar_dados_mongo(dados)
-
-
+# Verificar o status da resposta
+if response.status_code == 200:
+    data = response.json()
+    print(data)
+else:
+    print(f"Erro ao acessar a API: {response.status_code} - {response.text}")
