@@ -2,7 +2,6 @@ import requests
 import sys
 import os
 
-# Adiciona o diretório raiz (Projeto-Clash-Royale) ao sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from main import headers, players
@@ -27,11 +26,11 @@ def salvar_dados_mongo(dados):
     else:
         print("Nenhum dado para salvar.")
 
-# Lista de URLs dos jogadores
 urls = [
     'https://api.clashroyale.com/v1/players/%239QQ2J2ULL',
-    'https://api.clashroyale.com/v1/players/%2388P2JYY8R',
-    'https://api.clashroyale.com/v1/players/%2382Y88QUVQ'
+    'https://api.clashroyale.com/v1/players/%23U8RYGC8GU',
+    'https://api.clashroyale.com/v1/players/%23R2PLLVCY8',
+    'https://api.clashroyale.com/v1/players/%23GUPVGVQQV'
 ]
 
 dados = coletar_dados_api(urls)
