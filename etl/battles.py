@@ -41,7 +41,8 @@ urls = [
     'https://api.clashroyale.com/v1/players/%239QQ2J2ULL/battlelog',
     'https://api.clashroyale.com/v1/players/%23U8RYGC8GU/battlelog',
     'https://api.clashroyale.com/v1/players/%23R2PLLVCY8/battlelog',
-    'https://api.clashroyale.com/v1/players/%23GUPVGVQQV/battlelog'
+    'https://api.clashroyale.com/v1/players/%23GUPVGVQQV/battlelog',
+    'https://api.clashroyale.com/v1/players/%232U0J8RCYJ/battlelog'
 ]
 
 dados = coletar_dados_api(urls)

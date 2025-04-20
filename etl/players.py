@@ -30,7 +30,8 @@ urls = [
     'https://api.clashroyale.com/v1/players/%239QQ2J2ULL',
     'https://api.clashroyale.com/v1/players/%23U8RYGC8GU',
     'https://api.clashroyale.com/v1/players/%23R2PLLVCY8',
-    'https://api.clashroyale.com/v1/players/%23GUPVGVQQV'
+    'https://api.clashroyale.com/v1/players/%23GUPVGVQQV',
+    'https://api.clashroyale.com/v1/players/%232U0J8RCYJ'
 ]
 
 dados = coletar_dados_api(urls)
