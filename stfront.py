@@ -13,7 +13,7 @@ def importar_consultas():
     from consultas.consulta3 import executar as executar_consulta3
     # from consultas.consulta4 import executar as executar_consulta4
     # from consultas.consulta5 import executar as executar_consulta5
-    # from consultas.consulta_extra1 import executar as executar_consulta_extra1
+    from consultas.consulta_extra1 import executar as executar_consulta_extra1
     # from consultas.consulta_extra2 import executar as executar_consulta_extra2
     # from consultas.consulta_extra3 import executar as executar_consulta_extra3
     return locals()
@@ -32,7 +32,7 @@ tabs = st.tabs([
     "Consulta 3", 
     # "Consulta 4",
     # "Consulta 5",
-    # "Consulta Extra 1",
+    "Consulta Extra 1"
     # "Consulta Extra 2",
     # "Consulta Extra 3"
 ])
@@ -123,12 +123,15 @@ with tabs[2]:
 #         resultado = consultas['executar_consulta5']()
 #         st.dataframe(resultado)
 
-# # Consulta Extra 1
-# with tabs[5]:
-#     st.header("Consulta Extra 1 - Cartas mais utilizadas nos decks")
-#     if st.button("Executar Consulta Extra 1", key="btn_ce1"):
-#         resultado = consultas['executar_consulta_extra1']()
-#         st.dataframe(resultado)
+# Consulta Extra 1
+with tabs[3]:
+    st.header("Consulta Extra 1 - Cartas mais utilizadas nos decks")
+    if st.button("Executar Consulta Extra 1", key="btn_ce1"):
+        resultado = consultas['executar_consulta_extra1']()
+        if resultado:
+            st.dataframe(resultado)
+        else:
+            st.info("Nenhum resultado encontrado.")
 
 # # Consulta Extra 2
 # with tabs[6]:
