@@ -40,7 +40,7 @@ def executar():
 
     resultados = list(battles.aggregate(pipeline))
 
-    # Reformata os dados para exibição em tabela
+
     dados_tabela = []
     for jogador in resultados:
         for carta in jogador["cards"]:
