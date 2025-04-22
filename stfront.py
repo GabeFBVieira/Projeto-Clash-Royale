@@ -10,7 +10,7 @@ from datetime import datetime
 def importar_consultas():
     from consultas.consulta1 import executar as executar_consulta1
     from consultas.consulta2 import executar as executar_consulta2
-    # from consultas.consulta3 import executar as executar_consulta3
+    from consultas.consulta3 import executar as executar_consulta3
     # from consultas.consulta4 import executar as executar_consulta4
     # from consultas.consulta5 import executar as executar_consulta5
     # from consultas.consulta_extra1 import executar as executar_consulta_extra1
@@ -28,8 +28,8 @@ st.title("📊 Consultas Clash Royale👑")
 # Tabs
 tabs = st.tabs([
     "Consulta 1", 
-    "Consulta 2" 
-    # "Consulta 3", 
+    "Consulta 2", 
+    "Consulta 3", 
     # "Consulta 4",
     # "Consulta 5",
     # "Consulta Extra 1",
@@ -82,17 +82,28 @@ with tabs[1]:
 #             for r in resultado:
 #                 st.write(r)
 
-# # Consulta 3
-# with tabs[2]:
-#     st.header("Consulta 3 - Derrotas com combo de cartas")
-#     combo = st.text_area("Combo de cartas (separado por vírgula):", "Arqueiras,Gigante,Mini P.E.K.K.A")
-#     cartas = [c.strip() for c in combo.split(",")]
-#     data_inicio = st.date_input("Data inicial", datetime(2024, 1, 1), key="c3_start")
-#     data_fim = st.date_input("Data final", datetime(2024, 12, 31), key="c3_end")
+# Consulta 3
+with tabs[2]:
+    st.header("Consulta 3 - Derrotas com combo de cartas")
 
-#     if st.button("Executar Consulta 3", key="btn_c3"):
-#         resultado = consultas['executar_consulta3'](cartas, data_inicio, data_fim)
-#         st.write(f"Total de derrotas: {resultado}")
+    # Combo fixo para: Musketeer, Skeletons, Miner
+    cartas = ["Musketeer", "Skeletons", "Miner"]
+    st.write(f"Combo de cartas fixo: {', '.join(cartas)}")
+
+    data_inicio = st.date_input("Data inicial", datetime(2025, 1, 1), key="c3_start")
+    data_fim = st.date_input("Data final", datetime(2025, 12, 31), key="c3_end")
+
+    if st.button("Executar Consulta 3", key="btn_c3"):
+        resultado = consultas['executar_consulta3'](cartas, data_inicio, data_fim)
+        if resultado:
+            for r in resultado:
+                st.write(f"**Total de Partidas:** {r['totalPartidas']}")
+                st.write(f"**Total de Derrotas:** {r['totalDerrotas']}")
+                st.write(f"**Taxa de Derrotas:** {r['taxaDerrotas']}%")
+                st.markdown("---")
+        else:
+            st.info("Nenhum resultado encontrado para os parâmetros informados.")
+
 
 # # Consulta 4
 # with tabs[3]:
