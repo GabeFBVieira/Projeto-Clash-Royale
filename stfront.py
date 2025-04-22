@@ -64,25 +64,6 @@ with tabs[1]:
         resultado = consultas['executar_consulta2'](percentual, data_inicio, data_fim)
         st.dataframe(resultado)
 
-# with tabs[1]:
-#     st.header("Consulta 2 - Decks com mais de X% de vitórias")
-    
-#     # Verifique os parâmetros
-#     percentual = st.slider("Percentual mínimo de vitórias (%)", 0, 100, 60)
-#     data_inicio = st.date_input("Data inicial", datetime(2024, 1, 1), key="c2_start")
-#     data_fim = st.date_input("Data final", datetime(2024, 12, 31), key="c2_end")
- 
-#     if st.button("Executar Consulta 2", key="btn_c2"):     
-#         # Chama a consulta e passa os parâmetros corretos
-#         resultado = consultas['executar_consulta2'](percentual, data_inicio, data_fim)
-#         st.dataframe(resultado)
-#         if not resultado:
-#                 st.warning("Nenhum resultado retornado pela consulta.")
-#         else:
-#             st.success(f"{len(resultado)} resultados encontrados.")
-#             for r in resultado:
-#                 st.write(r)
-
 # Consulta 3
 with tabs[2]:
     st.header("Consulta 3 - Derrotas com combo de cartas")
