@@ -15,7 +15,7 @@ def importar_consultas():
     # from consultas.consulta5 import executar as executar_consulta5
     from consultas.consulta_extra1 import executar as executar_consulta_extra1
     # from consultas.consulta_extra2 import executar as executar_consulta_extra2
-    # from consultas.consulta_extra3 import executar as executar_consulta_extra3
+    from consultas.consulta_extra3 import executar as executar_consulta_extra3
     return locals()
 
 consultas = importar_consultas()
@@ -32,9 +32,9 @@ tabs = st.tabs([
     "Consulta 3", 
     # "Consulta 4",
     # "Consulta 5",
-    "Consulta Extra 1"
+    "Consulta Extra 1",
     # "Consulta Extra 2",
-    # "Consulta Extra 3"
+    "Consulta Extra 3"
 ])
 
 # Consulta 1
@@ -140,9 +140,12 @@ with tabs[3]:
 #         resultado = consultas['executar_consulta_extra2']()
 #         st.dataframe(resultado)
 
-# # Consulta Extra 3
-# with tabs[7]:
-#     st.header("Consulta Extra 3 - [Descrição da Consulta Extra 3]")
-#     if st.button("Executar Consulta Extra 3", key="btn_ce3"):
-#         resultado = consultas['executar_consulta_extra3']()
-#         st.dataframe(resultado)
+# Consulta Extra 3
+with tabs[4]:
+    st.header("Consulta Extra 3 - Jogadores com maior win rate")
+    if st.button("Executar Consulta Extra 3", key="btn_ce3"):
+        resultado = consultas['executar_consulta_extra3']()
+        if resultado:
+            st.dataframe(resultado)
+        else:
+            st.info("Nenhum resultado encontrado.")
