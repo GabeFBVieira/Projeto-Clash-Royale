@@ -76,7 +76,7 @@ def executar(percentual: float, data_inicio: datetime, data_fim: datetime):
                 nomes.extend([item["name"] for item in carta if isinstance(item, dict) and "name" in item])
 
         resultados.append({
-            "deck": ", ".join(nomes) if nomes else "Desconhecido",
+            "deck": ", ".join(nomes[:8]) if nomes else "Desconhecido",
             "totalPartidas": r.get("totalPartidas", 0),
             "totalVitorias": r.get("totalVitorias", 0),
             "taxaVitorias": r.get("taxaVitorias", 0.0)
