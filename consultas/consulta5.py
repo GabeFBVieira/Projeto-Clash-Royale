@@ -1,278 +1,99 @@
-from main import battles
 from datetime import datetime
+from main import battles
 
-# from dotenv import load_dotenv
-# import os
-# from pymongo import MongoClient
+def executar(data_inicio, data_fim, porcentagem_minima):
+    # Converter para string no formato correto
+    start_str = data_inicio.strftime("%Y%m%dT%H%M%S.000Z")
+    end_str = data_fim.strftime("%Y%m%dT%H%M%S.000Z")
 
-# # 1) Carrega variáveis de ambiente e conecta
-# load_dotenv()
-# client = MongoClient(os.getenv("MONGOKEY"))
-# db = client["bd_clashroyale"]
-# battles = db["battles"]
+    print("Data início:", start_str)
+    print("Data fim:", end_str)
 
-# # 2) Filtro de vitórias (battleTime como STRING ISO) de 1 a 19 de abril
-# match_wins = {
-#     "battleTime": {
-#         "$gte": "20250401T000000.000Z",
-#         "$lte": "20250419T235959.999Z"
-#     },
-#     "$expr": {
-#         "$gt": [
-#             {"$arrayElemAt": ["$team.crowns", 0]},
-#             {"$arrayElemAt": ["$opponent.crowns", 0]} 
-#         ]
-#     }
-# }
-
-# # 3) Conta o total de vitórias no período
-# total_wins = battles.count_documents(match_wins)
-# print(f"Total de vitórias no período: {total_wins}\n")
-
-# if total_wins == 0:
-#     print("Não há vitórias registradas nesse intervalo.")
-#     exit()
-
-# # 4) Pipeline para extrair combos com ≥1 carta de elixirCost ≥ 1
-# pipeline = [
-#     {"$match": match_wins},
-#     {"$addFields": {
-#         "filtered": {
-#             "$filter": {
-#                 "input": "$team.cards",
-#                 "as": "c",
-#                 "cond": {"$gte": ["$$c.elixirCost", 1]}
-#             }
-#         }
-#     }},
-#     {"$match": {"$expr": {"$gte": [{"$size": "$filtered"}, 1]}}},
-#     {"$project": {
-#         "combo": {
-#             "$map": {
-#                 "input": "$filtered",
-#                 "as": "c",
-#                 "in": "$$c.name"
-#             }
-#         }
-#     }},
-#     # Ordena o combo para agrupamento consistente (MongoDB >=5.2)
-#     {"$addFields": {
-#         "combo": {"$sortArray": {"input": "$combo", "sortBy": 1}}
-#     }},
-#     {"$group": {
-#         "_id": "$combo",
-#         "count": {"$sum": 1}
-#     }},
-#     {"$project": {
-#         "_id": 0,
-#         "combo": "$_id",
-#         "count": 1
-#     }}
-# ]
-
-# # 5) Executa o aggregation e imprime os resultados
-# results = list(battles.aggregate(pipeline))
-
-# print("Combos encontrados (≥1 carta de elixir ≥1):")
-# for doc in results:
-#     combo = doc["combo"]
-#     # Achata quaisquer listas internas
-#     flat = []
-#     for elt in combo:
-#         if isinstance(elt, list):
-#             flat.extend(elt)
-#         else:
-#             flat.append(elt)
-#     combo_str = ", ".join(flat)
-#     pct = doc["count"] / total_wins * 100
-#     print(f" • [{combo_str}] → {doc['count']}/{total_wins} partidas ({pct:.2f}%)") # - funcionouuu
-
-
-# from dotenv import load_dotenv
-# import os
-# from pymongo import MongoClient
-
-# # 1) Carrega variáveis de ambiente e conecta
-# load_dotenv()
-# client = MongoClient(os.getenv("MONGOKEY"))
-# db = client["bd_clashroyale"]
-# battles = db["battles"]
-
-# # 2) Filtro de vitórias (battleTime como STRING ISO) de 1 a 19 de abril
-# match_wins = {
-#     "battleTime": {
-#         "$gte": "20250401T000000.000Z",
-#         "$lte": "20250419T235959.999Z"
-#     },
-#     "$expr": {
-#         "$gt": [
-#             {"$arrayElemAt": ["$team.crowns", 0]},
-#             {"$arrayElemAt": ["$opponent.crowns", 0]}
-#         ]
-#     }
-# }
-
-# # 3) Conta o total de vitórias no período
-# total_wins = battles.count_documents(match_wins)
-# print(f"Total de vitórias no período: {total_wins}\n")
-
-# if total_wins == 0:
-#     print("Não há vitórias registradas nesse intervalo.")
-#     exit()
-
-# # 4) Pipeline para extrair combos com entre 3 e 5 cartas de elixirCost >= 1
-# pipeline = [
-#     {"$match": match_wins},
-#     {"$addFields": {
-#         "filtered": {
-#             "$filter": {
-#                 "input": "$team.cards",
-#                 "as": "c",
-#                 "cond": {"$gte": ["$$c.elixirCost", 1]}
-#             }
-#         }
-#     }},
-#     {"$match": {
-#         "$expr": {
-#             "$and": [
-#                 {"$gte": [{"$size": "$filtered"}, 3]},
-#                 {"$lte": [{"$size": "$filtered"}, 5]}
-#             ]
-#         }
-#     }},
-#     {"$project": {
-#         "combo": {
-#             "$map": {
-#                 "input": "$filtered",
-#                 "as": "c",
-#                 "in": "$$c.name"
-#             }
-#         }
-#     }},
-#     # Se o seu MongoDB suportar, ordena o combo para agrupamento consistente
-#     {"$addFields": {
-#         "combo": {
-#             "$sortArray": {"input": "$combo", "sortBy": 1}
-#         }
-#     }},
-#     {"$group": {
-#         "_id": "$combo",
-#         "count": {"$sum": 1}
-#     }},
-#     {"$project": {
-#         "_id": 0,
-#         "combo": "$_id",
-#         "count": 1
-#     }}
-# ]
-
-# results = list(battles.aggregate(pipeline))
-
-# # 5) Impressão de todos os combos encontrados
-# print("Combos encontrados (3 a 5 cartas de elixirCost >=1):")
-# for doc in results:
-#     combo = doc["combo"]
-#     # Achata quaisquer listas internas
-#     flat = []
-#     for elt in combo:
-#         if isinstance(elt, list):
-#             flat.extend(elt)
-#         else:
-#             flat.append(elt)
-#     combo_str = ", ".join(flat)
-#     pct = doc["count"] / total_wins * 100
-#     print(f" • [{combo_str}] → {doc['count']}/{total_wins} partidas ({pct:.2f}%)")
-
-
-# porcentagem para mais de 10% de vitórias
-from dotenv import load_dotenv
-import os
-from pymongo import MongoClient
-
-# 1) Carrega variáveis de ambiente e conecta
-load_dotenv()
-client = MongoClient(os.getenv("MONGOKEY"))
-db = client["bd_clashroyale"]
-battles = db["battles"]
-
-# 2) Filtro de vitórias (battleTime como STRING ISO) de 1 a 19 de abril
-match_wins = {
-    "battleTime": {
-        "$gte": "20250401T000000.000Z",
-        "$lte": "20250419T235959.999Z"
-    },
-    "$expr": {
-        "$gt": [
-            {"$arrayElemAt": ["$team.crowns", 0]},
-            {"$arrayElemAt": ["$opponent.crowns", 0]} 
-        ]
+    # Filtro para vitórias (battleTime dentro do intervalo)
+    match_wins = {
+        "battleTime": {
+            "$gte": start_str,
+            "$lte": end_str
+        },
+        "$expr": {
+            "$gt": [
+                {"$arrayElemAt": ["$team.crowns", 0]},
+                {"$arrayElemAt": ["$opponent.crowns", 0]}
+            ]
+        }
     }
-}
 
-# 3) Conta o total de vitórias no período
-total_wins = battles.count_documents(match_wins)
-print(f"Total de vitórias no período: {total_wins}\n")
+    total_wins = battles.count_documents(match_wins)
+    print(f"Total de vitórias no período: {total_wins}")
 
-if total_wins == 0:
-    print("Não há vitórias registradas nesse intervalo.")
-    exit()
+    if total_wins == 0:
+        print("Nenhuma vitória encontrada.")
+        return []
 
-# 4) Pipeline para extrair combos com ≥1 carta de elixirCost ≥ 1
-pipeline = [
-    {"$match": match_wins},
-    {"$addFields": {
-        "filtered": {
-            "$filter": {
-                "input": "$team.cards",
-                "as": "c",
-                "cond": {"$gte": ["$$c.elixirCost", 1]}
+
+    pipeline = [
+        {"$match": match_wins},
+        {"$addFields": {
+            "filtered": {
+                "$filter": {
+                    "input": "$team.cards",
+                    "as": "c",
+                    "cond": {"$gte": ["$$c.elixirCost", 1]}
+                }
             }
-        }
-    }},
-    {"$match": {"$expr": {"$gte": [{"$size": "$filtered"}, 1]}}},
-    {"$project": {
-        "combo": {
-            "$map": {
-                "input": "$filtered",
-                "as": "c",
-                "in": "$$c.name"
+        }},
+        {"$match": {"$expr": {"$gte": [{"$size": "$filtered"}, 1]}}},
+        {"$project": {
+            "combo": {
+                "$map": {
+                    "input": "$filtered",
+                    "as": "c",
+                    "in": "$$c.name"
+                }
             }
-        }
-    }},
-    # Ordena o combo para agrupamento consistente (MongoDB >=5.2)
-    {"$addFields": {
-        "combo": {"$sortArray": {"input": "$combo", "sortBy": 1}}
-    }},
-    {"$group": {
-        "_id": "$combo",
-        "count": {"$sum": 1}
-    }},
-    {"$project": {
-        "_id": 0,
-        "combo": "$_id",
-        "count": 1
-    }}
-]
+        }},
+        {"$addFields": {
+            "combo": {"$sortArray": {"input": "$combo", "sortBy": 1}}
+        }},
+        {"$group": {
+            "_id": "$combo",
+            "count": {"$sum": 1}
+        }},
+        {"$project": {
+            "_id": 0,
+            "combo": "$_id",
+            "count": 1
+        }}
+    ]
 
-# 5) Executa o aggregation e imprime apenas combos com >10% de vitórias
-results = list(battles.aggregate(pipeline))
 
-print("Combos com >10% de vitórias (≥1 carta de elixir ≥1):")
-found = False
-for doc in results:
-    combo = doc["combo"]
-    # Achata quaisquer listas internas
-    flat = []
-    for elt in combo:
-        if isinstance(elt, list):
-            flat.extend(elt)
-        else:
-            flat.append(elt)
-    combo_str = ", ".join(flat)
-    pct = doc["count"] / total_wins * 100
-    if pct > 10:
-        print(f" • [{combo_str}] → {doc['count']}/{total_wins} partidas ({pct:.2f}%)")
-        found = True
+    results = list(battles.aggregate(pipeline))
 
-if not found:
-    print("Nenhum combo atingiu mais de 10% das vitórias.")
+    print("Resultados da agregação:", results)
+
+
+    combos_filtrados = []
+    for doc in results:
+        combo = doc["combo"]
+        flat = []
+        for elt in combo:
+            if isinstance(elt, list):
+                flat.extend(elt)
+            else:
+                flat.append(elt)
+        pct = doc["count"] / total_wins * 100
+        if pct >= porcentagem_minima:
+            combos_filtrados.append({
+                "combo": flat,
+                "count": doc["count"],
+                "percent": round(pct, 2)
+            })
+
+    return combos_filtrados
+
+data_inicio = datetime(2025, 4, 1)
+data_fim = datetime(2025, 4, 19)
+porcentagem_minima = 2  
+
+resultados = executar(data_inicio, data_fim, porcentagem_minima)
+print("Resultados finais:", resultados)

@@ -1,69 +1,73 @@
 from main import battles
 from datetime import datetime
 
-pipeline = [
-    {
-        "$addFields": {
-            "battleTimeDate": {
-                "$dateFromString": {
-                    "dateString": "$battleTime",
-                    "format": "%Y%m%dT%H%M%S.%LZ"
+def executar(cartas, data_inicio, data_fim):
+    # Converter date para datetime (caso necessário)
+    if isinstance(data_inicio, datetime):
+        data_inicio = data_inicio
+    else:
+        data_inicio = datetime.combine(data_inicio, datetime.min.time())
+
+    if isinstance(data_fim, datetime):
+        data_fim = data_fim
+    else:
+        data_fim = datetime.combine(data_fim, datetime.max.time())
+
+    pipeline = [
+        {
+            "$addFields": {
+                "battleTimeDate": {
+                    "$dateFromString": {
+                        "dateString": "$battleTime",
+                        "format": "%Y%m%dT%H%M%S.%LZ"
+                    }
+                }
+            }
+        },
+        {
+            "$match": {
+                "team.0.cards.name": { "$all": cartas },
+                "battleTimeDate": {
+                    "$gte": data_inicio,
+                    "$lte": data_fim
+                }
+            }
+        },
+        {
+            "$addFields": {
+                "derrota": {
+                    "$lt": [
+                        { "$arrayElemAt": ["$team.crowns", 0] },
+                        { "$arrayElemAt": ["$opponent.crowns", 0] }
+                    ]
+                }
+            }
+        },
+        {
+            "$group": {
+                "_id": None,
+                "totalDerrotas": { "$sum": { "$cond": ["$derrota", 1, 0] } },
+                "totalPartidas": { "$sum": 1 }
+            }
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "totalPartidas": 1,
+                "totalDerrotas": 1,
+                "taxaDerrotas": {
+                    "$round": [
+                        {
+                            "$multiply": [
+                                { "$divide": ["$totalDerrotas", "$totalPartidas"] },
+                                100
+                            ]
+                        },
+                        2
+                    ]
                 }
             }
         }
-    },
-    {
-        "$match": {
-            "team.0.cards.name": { "$all": ["Musketeer", "Skeletons", "Miner"] },
-            "battleTimeDate": {
-                "$gte": datetime(2025, 4, 1, 0, 0, 0),
-                "$lte": datetime(2025, 4, 20, 23, 59, 59)
-            }
-        }
-    },
-    {
-        "$addFields": {
-            "derrota": {
-                "$lt": [
-                    { "$arrayElemAt": ["$team.crowns", 0] },
-                    { "$arrayElemAt": ["$opponent.crowns", 0] }
-                ]
-            }
-        }
-    },
-    {
-        "$group": {
-            "_id": None,
-            "totalDerrotas": { "$sum": { "$cond": ["$derrota", 1, 0] } },
-            "totalPartidas": { "$sum": 1 }
-        }
-    },
-    {
-        "$project": {
-            "_id": 0,
-            "totalPartidas": 1,
-            "totalDerrotas": 1,
-            "taxaDerrotas": {
-                "$round": [
-                    {
-                        "$multiply": [
-                            { "$divide": ["$totalDerrotas", "$totalPartidas"] },
-                            100
-                        ]
-                    },
-                    2
-                ]
-            }
-        }
-    }
-]
+    ]
 
-
-resultados = list(battles.aggregate(pipeline))
-
-
-for r in resultados:
-    print(f"Total de Partidas: {r['totalPartidas']}")
-    print(f"Total de Derrotas: {r['totalDerrotas']}")
-    print(f"Taxa de Derrotas: {r['taxaDerrotas']}%")
-    print("-" * 30)
+    return list(battles.aggregate(pipeline))
