@@ -2,14 +2,14 @@ from datetime import datetime
 from main import battles
 
 def executar(data_inicio, data_fim, porcentagem_minima):
-    # Converter para string no formato correto
+   
     start_str = data_inicio.strftime("%Y%m%dT%H%M%S.000Z")
     end_str = data_fim.strftime("%Y%m%dT%H%M%S.000Z")
 
     print("Data início:", start_str)
     print("Data fim:", end_str)
 
-    # Filtro para vitórias (battleTime dentro do intervalo)
+    
     match_wins = {
         "battleTime": {
             "$gte": start_str,

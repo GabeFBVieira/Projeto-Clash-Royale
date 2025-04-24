@@ -1,18 +1,8 @@
 from main import battles
-from datetime import datetime
+from datetime import datetime,time
 
-def executar(cartas, data_inicio, data_fim):
-    # Converter date para datetime (caso necessário)
-    if isinstance(data_inicio, datetime):
-        data_inicio = data_inicio
-    else:
-        data_inicio = datetime.combine(data_inicio, datetime.min.time())
-
-    if isinstance(data_fim, datetime):
-        data_fim = data_fim
-    else:
-        data_fim = datetime.combine(data_fim, datetime.max.time())
-
+def executar(cartas, data_inicio:datetime, data_fim:datetime):
+  
     pipeline = [
         {
             "$addFields": {
@@ -26,10 +16,10 @@ def executar(cartas, data_inicio, data_fim):
         },
         {
             "$match": {
-                "team.0.cards.name": { "$all": cartas },
+                "team.cards.name": { "$all": cartas },
                 "battleTimeDate": {
-                    "$gte": data_inicio,
-                    "$lte": data_fim
+                    "$gte": datetime.combine(data_inicio, time.min),
+                    "$lte": datetime.combine(data_fim, time.max)
                 }
             }
         },

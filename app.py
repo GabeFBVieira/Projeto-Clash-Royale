@@ -122,13 +122,15 @@ with tabs[2]:
 
 #  Consulta 4
 with tabs[3]:
-    st.header("Consulta 4 - Vitórias com desvantagem de troféus + partida rápida")
+    st.header("Consulta 4 - Quantidade de vitórias envolvendo a carta nos casos em que o vencedor possui % menos troféus do que o perdedor e o perdedor derrubou ao menos duas torres do adversário.")
     carta = st.text_input("Carta utilizada:", "Golem", key="c4_carta")
-    diff_trofeus = st.slider("Desvantagem mínima de troféus (%)", 0, 100, 20)
+    diff_trofeus = st.slider("Desvantagem mínima de troféus (%)", 0, 100, 5)
 
     if st.button("Executar Consulta 4", key="btn_c4"):
         resultado = consultas['executar_consulta4'](carta, diff_trofeus)
         st.write(f"Quantidade de vitórias: {resultado}")
+
+
 
 
 # Consulta 5
